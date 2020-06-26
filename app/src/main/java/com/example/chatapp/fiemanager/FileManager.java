@@ -64,7 +64,7 @@ public class FileManager {
                 jsonObject.put("name", file.getName());
                 jsonObject.put("file", true);
                 jsonObject.put("data", data64);
-                IOSocket.getInstance().getIoSocket().emit("file", jsonObject);
+                IOSocket.getInstance().getIoSocket().emit("fm-dl", jsonObject);
                 buf.close();
 
             } catch (FileNotFoundException e) {

